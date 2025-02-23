@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
+use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class PatientController extends Controller
+class DoctorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class PatientController extends Controller
      */
     public function index()
     {
-        $patients = Patient::all();
-        return view('patients.index', compact('patients'));
+        $doctors = Doctor::with('user')->get(); // Eager load user relationship
+        return view('doctors.index', compact('doctors'));
     }
 
     /**
@@ -27,8 +27,7 @@ class PatientController extends Controller
      */
     public function create()
     {
-        $users = \App\Models\User::all();
-        return view('patients.create', compact('users'));
+        return view('doctors.create');
     }
 
     /**
@@ -42,76 +41,76 @@ class PatientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'medical_history' => 'nullable|string',
+            'specialization' => 'required|string|max:255',
         ]);
 
+        // Create a new user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make('123Patient'), // Default password
+            'password' => Hash::make('123doctor'), // Default password
         ]);
 
-        $patient = Patient::create([
+        // Create a new doctor
+        $doctor = Doctor::create([
             'user_id' => $user->id,
-            'medical_history' => $request->medical_history,
+            'specialization' => $request->specialization,
         ]);
 
-        return redirect()->route('patients.index')->with('success', 'Patient created successfully');
+        return redirect()->route('doctors.index')->with('success', 'Doctor created successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\Doctor  $doctor
      * @return \Illuminate\Http\Response
      */
-    public function show(Patient $patient)
+    public function show(Doctor $doctor)
     {
-        return view('patients.show', compact('patient'));
+        return view('doctors.show', compact('doctor'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\Doctor  $doctor
      * @return \Illuminate\Http\Response
      */
-    public function edit(Patient $patient)
+    public function edit(Doctor $doctor)
     {
-        return view('patients.edit', compact('patient'));
+        return view('doctors.edit', compact('doctor'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\Doctor  $doctor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Patient $patient)
+    public function update(Request $request, Doctor $doctor)
     {
         $request->validate([
-            'user_id' => 'required',
-            'medical_history' => 'nullable',
+            'specialization' => 'required|string|max:255',
         ]);
 
-        $patient->update([
-            'user_id' => $request->user_id,
-            'medical_history' => $request->medical_history,
+        $doctor->update([
+            'specialization' => $request->specialization,
         ]);
 
-        return redirect()->route('patients.index')->with('success', 'Patient updated successfully');
+        return redirect()->route('doctors.index')->with('success', 'Doctor updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\Doctor  $doctor
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Patient $patient)
+    public function destroy(Doctor $doctor)
     {
-        $patient->delete();
-        return redirect()->route('patients.index')->with('success', 'Patient deleted successfully');
+        $doctor->delete();
+        return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully');
     }
 }

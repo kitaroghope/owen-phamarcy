@@ -25,11 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->hasVerifiedEmail()) {
-            return view('home');
-        } else {
-            Auth::user()->sendEmailVerificationNotification();
-            return redirect()->route('verification.notice');
-        }
+        // if (Auth::user()->hasVerifiedEmail()) {
+        //     return view('home');
+        // } else {
+        //     Auth::user()->sendEmailVerificationNotification();
+        //     return redirect()->route('verification.notice');
+        // }
+
+        return view('home');
+        
     }
 }

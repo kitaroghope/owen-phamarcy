@@ -12,7 +12,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['paid', 'pending ', 'refunded']);
+            $table->enum('status', ['paid', 'pending', 'refunded']);
             $table->timestamps();
         });
     }

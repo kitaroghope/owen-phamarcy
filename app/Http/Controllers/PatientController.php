@@ -25,7 +25,8 @@ class PatientController extends Controller
      */
     public function create()
     {
-        return view('patients.create');
+        $users = \App\Models\User::all();
+        return view('patients.create', compact('users'));
     }
 
     /**
@@ -105,4 +106,3 @@ class PatientController extends Controller
         return redirect()->route('patients.index')->with('success', 'Patient deleted successfully');
     }
 }
-

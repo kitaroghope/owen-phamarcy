@@ -5,8 +5,13 @@
     <form action="{{ route('patients.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="user_id">User  ID</label>
-            <input type="text" name="user_id" id="user_id" class="form-control" required>
+            <label for="user_id">User</label>
+            <input list="users" name="user_id" id="user_id" class="form-control" required>
+            <datalist id="users">
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+            </datalist>
         </div>
         <div class="form-group">
             <label for="medical_history">Medical History</label>
